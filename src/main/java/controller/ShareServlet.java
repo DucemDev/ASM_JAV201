@@ -27,7 +27,7 @@ public class ShareServlet extends HttpServlet {
             return;
         }
 
-        // 👉 giữ id để form post lại
+
         req.setAttribute("restaurantId", idParam);
         req.setAttribute("contentPage", "/views/share.jsp");
 

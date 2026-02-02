@@ -22,7 +22,7 @@ public class RestaurantServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // ===== CHECK ADMIN =====
+
         Users admin = (Users) req.getSession().getAttribute("authUser");
         if (admin == null || !admin.isRole()) {
             resp.sendRedirect(req.getContextPath() + "/login");
