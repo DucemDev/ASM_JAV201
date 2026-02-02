@@ -1,0 +1,109 @@
+USE master;
+GO
+
+IF EXISTS (SELECT name FROM sys.databases WHERE name = 'RestaurantDB')
+BEGIN
+    DROP DATABASE RestaurantDB;
+END
+GO
+
+CREATE DATABASE RestaurantDB;
+GO
+USE RestaurantDB;
+GO
+
+/* ================= USERS ================= */
+CREATE TABLE Users (
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserName VARCHAR(100) NOT NULL,
+    Email VARCHAR(150) NOT NULL UNIQUE,
+    Password VARCHAR(255) NOT NULL,
+    Role BIT NOT NULL,
+    OtpCode VARCHAR(10),
+    Status BIT NOT NULL
+);
+
+/* ================= RESTAURANT ================= */
+CREATE TABLE Restaurant (
+    RestaurantId INT IDENTITY(1,1) PRIMARY KEY,
+    Name VARCHAR(150) NOT NULL,
+    PosterUrl VARCHAR(255),
+    VideoUrl VARCHAR(255),
+    ViewCount INT DEFAULT 0
+);
+
+/* ================= FAVORITE ================= */
+CREATE TABLE Favorite (
+    FavoriteId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    RestaurantId INT NOT NULL,
+    LikedAt DATE,
+    CONSTRAINT FK_Favorite_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    CONSTRAINT FK_Favorite_Restaurant FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+);
+
+/* ================= VIEW HISTORY ================= */
+CREATE TABLE ViewHistory (
+    HistoryId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    RestaurantId INT NOT NULL,
+    ViewedAt DATE,
+    CONSTRAINT FK_ViewHistory_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    CONSTRAINT FK_ViewHistory_Restaurant FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+);
+
+/* ================= SHARES ================= */
+CREATE TABLE Shares (
+    ShareId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    RestaurantId INT NOT NULL,
+    RecipientEmail VARCHAR(150),
+    SharedAt DATE,
+    CONSTRAINT FK_Shares_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    CONSTRAINT FK_Shares_Restaurant FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+);
+
+/* ================= COMMENT ================= */
+CREATE TABLE Comment (
+    CommentId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    RestaurantId INT NOT NULL,
+    Content NVARCHAR(500) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Comment_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    CONSTRAINT FK_Comment_Restaurant FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+);
+
+/* ================= SAMPLE DATA ================= */
+INSERT INTO Users (UserName, Email, Password, Role, OtpCode, Status)
+VALUES
+('Nguyen Van A', 'a@gmail.com', '123456', 0, NULL, 1),
+('Tran Thi B', 'b@gmail.com', '123456', 0, NULL, 1),
+('Le Van C', 'c@gmail.com', '123456', 0, NULL, 1),
+('Admin', 'admin@gmail.com', 'admin123', 1, NULL, 1);
+
+INSERT INTO Restaurant (Name, PosterUrl, VideoUrl, ViewCount)
+VALUES
+('Pho 24', 'pho24.jpg', 'https://youtube.com/pho24', 120),
+('Bun Bo Hue O Xuân', 'bunbohue.jpg', 'https://youtube.com/bunbo', 90),
+('Com Tam Ba Ghien', 'comtam.jpg', 'https://youtube.com/comtam', 150),
+('Pizza 4P''s', 'pizza4ps.jpg', 'https://youtube.com/pizza4ps', 200),
+('Highlands Coffee', 'highlands.jpg', 'https://youtube.com/highlands', 300),
+('Gogi House', 'gogi.jpg', 'https://youtube.com/gogi', 180);
+
+SELECT * FROM Users
+INSERT INTO Favorite (UserId, RestaurantId, LikedAt)
+VALUES
+(1, 1, GETDATE()), -- Nguyen Van A like Pho 24
+(2, 1, GETDATE()), -- Tran Thi B like Pho 24
+(1, 5, GETDATE()); -- Nguyen Van A like Highlands Coffee
+INSERT INTO Shares (UserId, RestaurantId, RecipientEmail, SharedAt)
+VALUES
+(1, 1, 'friend1@gmail.com', GETDATE()), -- Nguyen Van A share Pho 24 cho friend1
+(1, 1, 'workmate@company.com', GETDATE()), -- Nguyen Van A share Pho 24 cho đồng nghiệp
+(3, 5, 'family@gmail.com', GETDATE());    -- Le Van C share Highlands Coffee cho gia đình
+INSERT INTO Comment (UserId, RestaurantId, Content, CreatedAt)
+VALUES
+(1, 1, N'Phở ở đây rất ngon, nước dùng đậm đà!', GETDATE()),
+(2, 1, N'Giá hơi cao nhưng chất lượng phục vụ tốt.', GETDATE()),
+(3, 5, N'Không gian quán đẹp, thích hợp để làm việc.', GETDATE());
