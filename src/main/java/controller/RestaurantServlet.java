@@ -5,16 +5,12 @@ import dao.RestaurantImpl;
 import entity.Restaurant;
 import entity.Users;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.UUID;
+
 @WebServlet("/admin/restaurant")
-@MultipartConfig
 public class RestaurantServlet extends HttpServlet {
 
     private final RestaurantDAO dao = new RestaurantImpl();
@@ -29,6 +25,7 @@ public class RestaurantServlet extends HttpServlet {
             return;
         }
 
+        // ===== DELETE =====
         if (req.getParameter("delete") != null) {
             Integer id = Integer.parseInt(req.getParameter("delete"));
             dao.delete(id);
@@ -36,15 +33,17 @@ public class RestaurantServlet extends HttpServlet {
             return;
         }
 
+        // ===== EDIT =====
         if (req.getParameter("id") != null) {
             Integer id = Integer.parseInt(req.getParameter("id"));
             Restaurant r = dao.findById(id);
 
-            System.out.println("====== EDIT RESTAURANT ======");
-            System.out.println("ID        = " + id);
-            System.out.println("POSTER URL= " + r.getPosterUrl());
-            System.out.println("VIDEO URL = " + r.getVideoUrl());
-            System.out.println("============================");
+            System.out.println("=== EDIT RESTAURANT ===");
+            System.out.println("ID    = " + r.getRestaurantId());
+            System.out.println("NAME  = " + r.getName());
+            System.out.println("POSTER= " + r.getPosterUrl());
+            System.out.println("VIDEO = " + r.getVideoUrl());
+            System.out.println("======================");
 
             req.setAttribute("form", r);
         } else {
@@ -71,39 +70,20 @@ public class RestaurantServlet extends HttpServlet {
         }
 
         if (id == null) r.setViewCount(0);
+
         r.setName(req.getParameter("name"));
+        r.setPosterUrl(req.getParameter("posterUrl"));
+        r.setVideoUrl(req.getParameter("videoUrl"));
 
-        String uploadRoot = req.getServletContext().getRealPath("/uploads");
-        File posterDir = new File(uploadRoot, "posters");
-        File videoDir = new File(uploadRoot, "videos");
-        posterDir.mkdirs();
-        videoDir.mkdirs();
-
-        Part poster = req.getPart("posterFile");
-        if (poster != null && poster.getSize() > 0) {
-            String ext = getExtension(poster);
-            String fileName = UUID.randomUUID() + ext;
-            poster.write(new File(posterDir, fileName).getAbsolutePath());
-            r.setPosterUrl("uploads/posters/" + fileName);
-        }
-
-        Part video = req.getPart("videoFile");
-        if (video != null && video.getSize() > 0) {
-            String ext = getExtension(video);
-            String fileName = UUID.randomUUID() + ext;
-            video.write(new File(videoDir, fileName).getAbsolutePath());
-            r.setVideoUrl("uploads/videos/" + fileName);
-        }
+        System.out.println("=== SAVE RESTAURANT ===");
+        System.out.println("NAME  = " + r.getName());
+        System.out.println("POSTER= " + r.getPosterUrl());
+        System.out.println("VIDEO = " + r.getVideoUrl());
+        System.out.println("======================");
 
         if (id == null) dao.create(r);
         else dao.update(r);
 
         resp.sendRedirect(req.getContextPath() + "/admin/restaurant");
-    }
-
-    private String getExtension(Part part) {
-        String name = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-        int dot = name.lastIndexOf(".");
-        return (dot >= 0) ? name.substring(dot) : "";
     }
 }

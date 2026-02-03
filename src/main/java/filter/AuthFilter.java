@@ -7,7 +7,11 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/like", "/unlike", "/favorite", "/share", "/history"})
+@WebFilter(urlPatterns = {
+        "/like", "/unlike", "/favorite",
+        "/share", "/share/send", "/history", "/share-send", "/share/form"
+})
+
 public class AuthFilter implements Filter {
 
     @Override

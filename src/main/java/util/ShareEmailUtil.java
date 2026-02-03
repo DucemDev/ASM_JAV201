@@ -2,18 +2,21 @@ package util;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
-
 import java.util.Properties;
 
 public class ShareEmailUtil {
 
     private static final String FROM_EMAIL = "anh.huynhleduc@gmail.com";
-    private static final String PASSWORD = "oslc bvel axgh iunz"; // Gmail App Password
+    private static final String PASSWORD = "oslc bvel axgh iunz";
 
-    public static void sendShareMail(String toEmail,
-                                     String senderName,
-                                     String restaurantName,
-                                     String link) {
+    public static void sendShareMail(
+            String toEmail,
+            String senderName,
+            String restaurantName,
+            String link) {
+
+        System.out.println("📨 START SENDING MAIL...");
+        System.out.println("TO = " + toEmail);
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -23,35 +26,35 @@ public class ShareEmailUtil {
 
         Session session = Session.getInstance(props,
                 new Authenticator() {
-                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
                     }
                 });
 
+        session.setDebug(true);
+
         try {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(FROM_EMAIL, "Owl Review"));
-            msg.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(toEmail)
-            );
+            msg.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(toEmail));
 
-            msg.setSubject("📤 " + senderName + " đã chia sẻ một quán ăn với bạn");
+            msg.setSubject("📤 " + senderName + " đã chia sẻ quán ăn với bạn");
 
-            String content =
-                    "Xin chào,\n\n"
-                            + senderName + " đã chia sẻ với bạn một quán ăn thú vị trên Owl Review.\n\n"
-                            + "🍽️ Quán ăn: " + restaurantName + "\n"
-                            + "🔗 Xem chi tiết tại đây:\n"
-                            + link + "\n\n"
-                            + "— Owl Review";
+            String html = """
+                <h2>%s</h2>
+                <p>%s đã chia sẻ quán ăn với bạn</p>
+                <a href="%s">Xem chi tiết</a>
+                """.formatted(restaurantName, senderName, link);
 
-            msg.setText(content);
+            msg.setContent(html, "text/html; charset=UTF-8");
 
             Transport.send(msg);
 
+            System.out.println("✅ MAIL SENT SUCCESS");
+
         } catch (Exception e) {
+            System.out.println("❌ SEND MAIL FAILED");
             e.printStackTrace();
         }
     }
