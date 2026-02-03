@@ -1,24 +1,69 @@
-
---%><%@ page language="java" contentType="text/html; charset=UTF-8"
-             pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ page contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
+         isELIgnored="false" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
+<div class="container">
 
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+    <!-- NAME -->
+    <h2 class="fw-bold mb-2">
+        ${restaurant.name}
+    </h2>
 
-<h2>${r.name}</h2>
-<p>Lượt xem: ${r.viewCount}</p>
+    <p class="text-muted">
+        👁️ Lượt xem: ${restaurant.viewCount}
+    </p>
 
-<iframe width="560" height="315" src="${r.videoUrl}"></iframe>
+    <!-- POSTER -->
+    <c:if test="${not empty restaurant.posterUrl}">
+        <c:choose>
+            <!-- LINK NGOÀI -->
+            <c:when test="${restaurant.posterUrl.startsWith('http')}">
+                <img src="${restaurant.posterUrl}"
+                     class="img-fluid rounded mb-4"
+                     style="max-height:400px; object-fit:cover;">
+            </c:when>
 
-<form method="post" action="${pageContext.request.contextPath}/restaurant/like">
-    <input type="hidden" name="id" value="${r.restaurantId}">
-    <button>Like</button>
-</form>
+            <!-- LINK TRONG PROJECT -->
+            <c:otherwise>
+                <img src="${pageContext.request.contextPath}/${restaurant.posterUrl}"
+                     class="img-fluid rounded mb-4"
+                     style="max-height:400px; object-fit:cover;">
+            </c:otherwise>
+        </c:choose>
+    </c:if>
 
-</body>
-</html>
+
+
+
+    <!-- VIDEO -->
+    <c:if test="${not empty restaurant.videoUrl}">
+        <div class="ratio ratio-16x9 mb-4">
+            <iframe src="${restaurant.videoUrl}"
+                    title="Restaurant video"
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </c:if>
+
+    <!-- ACTIONS -->
+    <div class="d-flex gap-2">
+
+        <a href="${pageContext.request.contextPath}/like?id=${restaurant.restaurantId}"
+           class="btn btn-outline-danger">
+            ❤️ Yêu thích
+        </a>
+
+        <a href="${pageContext.request.contextPath}/share?id=${restaurant.restaurantId}"
+           class="btn btn-outline-secondary">
+            📤 Chia sẻ
+        </a>
+
+        <a href="${pageContext.request.contextPath}/home"
+           class="btn btn-secondary">
+            ⬅ Quay lại
+        </a>
+
+    </div>
+
+</div>

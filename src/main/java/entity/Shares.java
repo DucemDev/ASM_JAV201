@@ -17,12 +17,11 @@ public class Shares {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ShareId")
-    private String shareId;
+    private Integer shareId;   // ✅ FIX ĐÚNG KIỂU
 
     @Column(name = "RecipientEmail")
     private String recipientEmail;
 
-    // 🔥 SỬA ĐÚNG TÊN CỘT
     @Column(name = "SharedAt")
     private LocalDateTime sharedAt;
 

@@ -31,6 +31,7 @@ public class HomeServlet extends HttpServlet {
             } catch (NumberFormatException ignored) {}
         }
 
+
         // ===== LOAD TOÀN BỘ NHÀ HÀNG =====
         List<Restaurant> all = dao.findAll(); // ✅ SỬA Ở ĐÂY
 

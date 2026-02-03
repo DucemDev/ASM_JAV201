@@ -18,8 +18,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100 shadow-sm border-0">
 
-                        <!-- IMAGE -->
-                        <img src="${pageContext.request.contextPath}/images/${r.posterUrl}"
+                        <!-- IMAGE (LINK TRỰC TIẾP) -->
+                        <img src="${r.posterUrl}"
                              class="card-img-top"
                              alt="${r.name}"
                              style="height:180px; object-fit:cover;">
@@ -48,10 +48,11 @@
                                 Yêu thích
                             </a>
 
-                            <a href="${pageContext.request.contextPath}/share?id=${r.restaurantId}"
-                               class="btn btn-outline-secondary btn-sm">
+                            <a href="${pageContext.request.contextPath}/share/form?id=${r.restaurantId}"
+                               class="btn btn-primary">
                                 Chia sẻ
                             </a>
+
 
                         </div>
 
