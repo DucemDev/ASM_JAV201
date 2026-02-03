@@ -11,7 +11,8 @@ import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.nio.file.Paths;
+import java.util.UUID;
 @WebServlet("/admin/restaurant")
 @MultipartConfig
 public class RestaurantServlet extends HttpServlet {
@@ -22,14 +23,12 @@ public class RestaurantServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-
         Users admin = (Users) req.getSession().getAttribute("authUser");
         if (admin == null || !admin.isRole()) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
-        // ===== DELETE =====
         if (req.getParameter("delete") != null) {
             Integer id = Integer.parseInt(req.getParameter("delete"));
             dao.delete(id);
@@ -37,12 +36,10 @@ public class RestaurantServlet extends HttpServlet {
             return;
         }
 
-        // ===== EDIT =====
         if (req.getParameter("id") != null) {
             Integer id = Integer.parseInt(req.getParameter("id"));
             Restaurant r = dao.findById(id);
 
-            // 🔍 DEBUG CHUẨN
             System.out.println("====== EDIT RESTAURANT ======");
             System.out.println("ID        = " + id);
             System.out.println("POSTER URL= " + r.getPosterUrl());
@@ -55,7 +52,6 @@ public class RestaurantServlet extends HttpServlet {
         }
 
         req.setAttribute("items", dao.findAll());
-
         req.getRequestDispatcher("/views/admin/restaurant-manager.jsp")
                 .forward(req, resp);
     }
@@ -68,19 +64,13 @@ public class RestaurantServlet extends HttpServlet {
                 ? Integer.parseInt(req.getParameter("id"))
                 : null;
 
-        Restaurant r;
-
-        if (id != null) {
-            r = dao.findById(id);
-            if (r == null) {
-                resp.sendRedirect(req.getContextPath() + "/admin/restaurant");
-                return;
-            }
-        } else {
-            r = new Restaurant();
-            r.setViewCount(0);
+        Restaurant r = (id != null) ? dao.findById(id) : new Restaurant();
+        if (r == null) {
+            resp.sendRedirect(req.getContextPath() + "/admin/restaurant");
+            return;
         }
 
+        if (id == null) r.setViewCount(0);
         r.setName(req.getParameter("name"));
 
         String uploadRoot = req.getServletContext().getRealPath("/uploads");
@@ -89,28 +79,31 @@ public class RestaurantServlet extends HttpServlet {
         posterDir.mkdirs();
         videoDir.mkdirs();
 
-        // ===== POSTER =====
         Part poster = req.getPart("posterFile");
         if (poster != null && poster.getSize() > 0) {
-            String fileName = System.currentTimeMillis() + "_" + poster.getSubmittedFileName();
+            String ext = getExtension(poster);
+            String fileName = UUID.randomUUID() + ext;
             poster.write(new File(posterDir, fileName).getAbsolutePath());
             r.setPosterUrl("uploads/posters/" + fileName);
         }
 
-        // ===== VIDEO =====
         Part video = req.getPart("videoFile");
         if (video != null && video.getSize() > 0) {
-            String fileName = System.currentTimeMillis() + "_" + video.getSubmittedFileName();
+            String ext = getExtension(video);
+            String fileName = UUID.randomUUID() + ext;
             video.write(new File(videoDir, fileName).getAbsolutePath());
             r.setVideoUrl("uploads/videos/" + fileName);
         }
 
-        if (id == null) {
-            dao.create(r);
-        } else {
-            dao.update(r);
-        }
+        if (id == null) dao.create(r);
+        else dao.update(r);
 
         resp.sendRedirect(req.getContextPath() + "/admin/restaurant");
+    }
+
+    private String getExtension(Part part) {
+        String name = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+        int dot = name.lastIndexOf(".");
+        return (dot >= 0) ? name.substring(dot) : "";
     }
 }

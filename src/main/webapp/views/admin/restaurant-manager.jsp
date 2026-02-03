@@ -1,4 +1,7 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
+         isELIgnored="false" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -51,20 +54,14 @@
 
         <div class="mb-3">
           <label class="form-label">Ảnh poster</label>
-          <input type="file"
-                 name="posterFile"
-                 accept="image/*"
-                 class="form-control"
-                 onchange="previewImage(this)">
+          <input type="file" name="posterFile" accept="image/*"
+                 class="form-control" onchange="previewImage(this)">
         </div>
 
         <div class="mb-3">
           <label class="form-label">Upload video (.mp4)</label>
-          <input type="file"
-                 name="videoFile"
-                 accept="video/mp4"
-                 class="form-control"
-                 onchange="previewVideo(this)">
+          <input type="file" name="videoFile" accept="video/mp4"
+                 class="form-control" onchange="previewVideo(this)">
         </div>
 
         <button class="btn btn-primary">
@@ -89,7 +86,7 @@
       <div class="card-header">Xem trước</div>
       <div class="card-body text-center">
 
-        <!-- ===== IMAGE PREVIEW (FIX URL ENCODE) ===== -->
+        <!-- IMAGE -->
         <c:url var="posterSrc" value="/${form.posterUrl}" />
         <img id="imgPreview"
              class="preview-box mb-3"
@@ -97,15 +94,12 @@
                   ? 'https://placehold.co/600x400?text=No+Image'
                   : posterSrc}">
 
-        <!-- ===== VIDEO PREVIEW (FIX URL ENCODE – 1 KHUNG DUY NHẤT) ===== -->
+        <!-- VIDEO (FIX CHUẨN) -->
         <c:url var="videoSrc" value="/${form.videoUrl}" />
         <div class="video-container">
           <video id="videoPreview"
                  controls
-                 style="${empty form.videoUrl ? 'display:none' : ''}">
-            <c:if test="${not empty form.videoUrl}">
-              <source src="${videoSrc}" type="video/mp4">
-            </c:if>
+                 src="${empty form.videoUrl ? '' : videoSrc}">
           </video>
         </div>
 
@@ -168,7 +162,6 @@
     const video = document.getElementById("videoPreview");
     if (input.files && input.files[0]) {
       video.src = URL.createObjectURL(input.files[0]);
-      video.style.display = "block";
       video.load();
     }
   }
