@@ -3,137 +3,162 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Owl Review - Authentication</title>
+    <title>Owl Review</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
-
-    <style>
-        .auth-card {
-            transition: all 0.3s ease;
-        }
-    </style>
 </head>
+
 <body class="bg-light">
 
 <div class="container">
-    <div class="row justify-content-center mt-5">
+    <div class="row justify-content-center align-items-center min-vh-100">
+
         <div class="col-md-4">
 
-            <div class="card shadow auth-card">
-                <div class="card-header text-center fw-bold">
-                    🦉 <span id="formTitle">Đăng nhập</span>
-                </div>
+            <div class="card border-0 shadow-sm rounded-4">
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    <!-- LOGIN FORM -->
+                    <div class="text-center mb-4">
+                        <h4 class="fw-bold text-warning mb-1">🦉 Owl Review</h4>
+                        <small class="text-muted" id="formTitle">
+                            Đăng nhập tài khoản
+                        </small>
+                    </div>
+
+                    <!-- LOGIN -->
                     <form id="loginForm"
                           method="post"
                           action="<c:url value='/login'/>">
 
                         <div class="mb-3">
-                            <label>Email</label>
-                            <input type="email" name="emailip"
-                                   class="form-control"
-                                   placeholder="Nhập email" required>
+                            <label class="form-label small text-muted">
+                                Email
+                            </label>
+                            <input type="email"
+                                   name="emailip"
+                                   class="form-control rounded-pill px-3"
+                                   placeholder="you@email.com"
+                                   required>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Mật khẩu</label>
-                            <input type="password" name="passwordip"
-                                   class="form-control"
-                                   placeholder="Nhập mật khẩu" required>
+                        <div class="mb-4">
+                            <label class="form-label small text-muted">
+                                Mật khẩu
+                            </label>
+                            <input type="password"
+                                   name="passwordip"
+                                   class="form-control rounded-pill px-3"
+                                   placeholder="••••••••"
+                                   required>
                         </div>
 
-                        <button class="btn btn-primary w-100">
+                        <button class="btn btn-primary rounded-pill w-100 mb-3">
                             Đăng nhập
                         </button>
-                        <div class="text-center mt-3">
+
+                        <div class="text-center">
                             <a href="<c:url value='/forgot-password'/>"
-                               class="text-decoration-none">
+                               class="small text-decoration-none">
                                 Quên mật khẩu?
                             </a>
-
                         </div>
 
                     </form>
 
-                    <!-- REGISTER FORM -->
+                    <!-- REGISTER -->
                     <form id="registerForm"
                           method="post"
                           action="<c:url value='/register'/>"
                           style="display:none">
 
                         <div class="mb-3">
-                            <label>Email</label>
-                            <input type="email" name="emailip"
-                                   class="form-control"
-                                   placeholder="Nhập email" required>
+                            <label class="form-label small text-muted">
+                                Email
+                            </label>
+                            <input type="email"
+                                   name="emailip"
+                                   class="form-control rounded-pill px-3"
+                                   required>
                         </div>
 
                         <div class="mb-3">
-                            <label>Tên hiển thị</label>
-                            <input type="text" name="usernameip"
-                                   class="form-control"
-                                   placeholder="Nhập tên tài khoản của bạn" required>
+                            <label class="form-label small text-muted">
+                                Tên hiển thị
+                            </label>
+                            <input type="text"
+                                   name="usernameip"
+                                   class="form-control rounded-pill px-3"
+                                   required>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Mật khẩu</label>
-                            <input type="password" name="passwordip"
-                                   class="form-control"
-                                   placeholder="Tạo mật khẩu" required>
+                        <div class="mb-4">
+                            <label class="form-label small text-muted">
+                                Mật khẩu
+                            </label>
+                            <input type="password"
+                                   name="passwordip"
+                                   class="form-control rounded-pill px-3"
+                                   required>
                         </div>
 
-                        <button class="btn btn-success w-100">
+                        <button class="btn btn-success rounded-pill w-100">
                             Tạo tài khoản
                         </button>
+
                     </form>
 
                     <!-- MESSAGE -->
                     <c:if test="${not empty message}">
-                        <div class="alert alert-danger mt-3 text-center">
+                        <div class="alert alert-danger mt-3 text-center small">
                                 ${message}
                         </div>
                     </c:if>
 
                 </div>
 
-                <div class="card-footer text-center">
-                    <small id="switchText">
+                <div class="card-footer bg-white border-0 text-center pb-4">
+
+                    <a href="${pageContext.request.contextPath}/home"
+                       class="btn btn-outline-secondary btn-sm rounded-pill px-3 mb-2">
+                        ⬅️ Quay về trang chủ
+                    </a>
+
+                    <div class="small text-muted" id="switchText">
                         Chưa có tài khoản?
                         <a href="#" onclick="showRegister()">Tạo tài khoản</a>
-                    </small>
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
+
     </div>
 </div>
 
 <script>
     function showRegister() {
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("registerForm").style.display = "block";
-        document.getElementById("formTitle").innerText = "Đăng ký";
-        document.getElementById("switchText").innerHTML =
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        formTitle.innerText = "Đăng ký tài khoản";
+        switchText.innerHTML =
             'Đã có tài khoản? <a href="#" onclick="showLogin()">Đăng nhập</a>';
     }
 
     function showLogin() {
-        document.getElementById("registerForm").style.display = "none";
-        document.getElementById("loginForm").style.display = "block";
-        document.getElementById("formTitle").innerText = "Đăng nhập";
-        document.getElementById("switchText").innerHTML =
+        registerForm.style.display = "none";
+        loginForm.style.display = "block";
+        formTitle.innerText = "Đăng nhập tài khoản";
+        switchText.innerHTML =
             'Chưa có tài khoản? <a href="#" onclick="showRegister()">Tạo tài khoản</a>';
     }
 </script>
+
 <c:if test="${showRegister}">
-    <script>
-        showRegister();
-    </script>
+    <script>showRegister();</script>
 </c:if>
 
 </body>

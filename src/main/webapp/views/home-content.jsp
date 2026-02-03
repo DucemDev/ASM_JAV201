@@ -2,8 +2,10 @@
          pageEncoding="UTF-8"
          isELIgnored="false" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet">
 
-<h3 class="mb-4 fw-semibold">Danh sách quán ăn</h3>
+<h2 class="mb-4 fw-semibold">Danh sách quán ăn</h2>
 
 <c:choose>
     <c:when test="${empty list}">
@@ -16,44 +18,63 @@
         <div class="row g-4">
             <c:forEach var="r" items="${list}">
                 <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
 
-                        <!-- IMAGE (LINK TRỰC TIẾP) -->
-                        <img src="${r.posterUrl}"
-                             class="card-img-top"
-                             alt="${r.name}"
-                             style="height:180px; object-fit:cover;">
+                        <!-- IMAGE -->
+                        <div class="ratio ratio-16x9 bg-light">
+                            <img src="${r.posterUrl}"
+                                 class="img-fluid w-100"
+                                 alt="${r.name}"
+                                 style="object-fit: cover;">
+                        </div>
 
                         <!-- BODY -->
                         <div class="card-body">
-                            <h5 class="card-title fw-semibold mb-2">
-                                    ${r.name}
+                            <h5 class="fw-semibold mb-1 text-truncate">
+                                ${r.name}
                             </h5>
-
-                            <p class="text-muted mb-0">
-                                Lượt xem: ${r.viewCount}
-                            </p>
+                            <small class="text-muted">
+                                 ${r.viewCount} lượt xem
+                            </small>
                         </div>
 
                         <!-- FOOTER -->
-                        <div class="card-footer bg-white border-0 text-center pb-3">
+                        <div class="card-footer bg-white border-0 px-3 pb-3">
+                            <div class="d-flex align-items-center justify-content-between">
 
-                            <a href="${pageContext.request.contextPath}/restaurant/detail?id=${r.restaurantId}"
-                               class="btn btn-primary btn-sm me-1">
-                                Xem chi tiết
-                            </a>
+                                <!-- LEFT: VIEW DETAIL -->
+                                <a href="${pageContext.request.contextPath}/restaurant/detail?id=${r.restaurantId}"
+                                   class="btn btn-primary btn-sm px-3 rounded-pill">
+                                    Xem chi tiết
+                                </a>
 
-                            <a href="${pageContext.request.contextPath}/like?id=${r.restaurantId}"
-                               class="btn btn-outline-danger btn-sm me-1">
-                                Yêu thích
-                            </a>
+                                <!-- RIGHT: ICON ACTIONS -->
+                                <div class="d-flex align-items-center gap-3">
 
-                            <a href="${pageContext.request.contextPath}/share/form?id=${r.restaurantId}"
-                               class="btn btn-primary">
-                                Chia sẻ
-                            </a>
+                                    <!-- HEART -->
+                                    <c:set var="liked" value="${likedMap[r.restaurantId]}" />
+
+                                    <a href="${pageContext.request.contextPath}/${liked ? 'unlike' : 'like'}?id=${r.restaurantId}"
+                                       class="fs-5"
+                                       title="${liked ? 'Bỏ yêu thích' : 'Yêu thích'}"
+                                       style="text-decoration:none;">
+
+                                        <i class="bi ${liked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted'}"></i>
+
+                                    </a>
 
 
+                                    <!-- SHARE -->
+                                    <a href="${pageContext.request.contextPath}/share/form?id=${r.restaurantId}"
+                                       class="text-muted fs-5"
+                                       title="Chia sẻ"
+                                       style="text-decoration:none;">
+                                        <i class="bi bi-share"></i>
+                                    </a>
+
+                                </div>
+
+                            </div>
                         </div>
 
                     </div>
@@ -78,7 +99,7 @@
                     <li class="page-item ${i == page ? 'active' : ''}">
                         <a class="page-link"
                            href="${pageContext.request.contextPath}/home?page=${i}">
-                                ${i}
+                            ${i}
                         </a>
                     </li>
                 </c:forEach>

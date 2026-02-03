@@ -22,5 +22,9 @@ public interface RestaurantDAO {
     List<Restaurant> findTop6ByView();
 
     List<Restaurant> findPage(int page, int size);
+    List<Restaurant> findByViewDesc();
+    List<Restaurant> findByViewAsc();
+    List<Restaurant> findRandom();
+
 }
 

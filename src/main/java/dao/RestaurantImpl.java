@@ -162,4 +162,46 @@ public class RestaurantImpl implements RestaurantDAO {
             em.close();
         }
     }
+    // 🔥 VIEW CAO NHẤT
+    @Override
+    public List<Restaurant> findByViewDesc() {
+        EntityManager em = XJPA.getEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT r FROM Restaurant r ORDER BY r.viewCount DESC",
+                    Restaurant.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    // 🔻 VIEW THẤP NHẤT
+    @Override
+    public List<Restaurant> findByViewAsc() {
+        EntityManager em = XJPA.getEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT r FROM Restaurant r ORDER BY r.viewCount ASC",
+                    Restaurant.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    // 🎲 RANDOM
+    @Override
+    public List<Restaurant> findRandom() {
+        EntityManager em = XJPA.getEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT r FROM Restaurant r ORDER BY function('NEWID')",
+                    Restaurant.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }
