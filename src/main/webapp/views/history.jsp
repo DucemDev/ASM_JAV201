@@ -19,40 +19,47 @@
     <c:otherwise>
         <div class="row g-4">
 
-            <c:forEach var="h" items="${list}">
+            <c:forEach var="f" items="${list}">
+                <c:set var="r" value="${f.restaurant}" />
+
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
 
-                        <!-- IMAGE -->
+                        <!-- POSTER -->
                         <div class="ratio ratio-16x9 bg-light">
-                            <img src="${pageContext.request.contextPath}/images/${h.restaurant.posterUrl}"
+                            <img src="${r.posterUrl}"
                                  class="img-fluid w-100"
-                                 alt="${h.restaurant.name}"
-                                 style="object-fit: cover;">
+                                 alt="${r.name}"
+                                 style="object-fit:cover;">
                         </div>
 
                         <!-- BODY -->
                         <div class="card-body">
                             <h5 class="fw-semibold mb-1 text-truncate">
-                                ${h.restaurant.name}
+                                    ${r.name}
                             </h5>
 
-                            <div class="d-flex flex-column gap-1">
-                                <small class="text-muted">
-                                    <i class="bi bi-eye"></i>
-                                    ${h.restaurant.viewCount} lượt xem
-                                </small>
-
-
-                            </div>
+                            <small class="text-muted">
+                                    ${r.viewCount} lượt xem
+                            </small>
                         </div>
 
                         <!-- FOOTER -->
                         <div class="card-footer bg-white border-0 px-3 pb-3">
-                            <a href="${pageContext.request.contextPath}/restaurant/detail?id=${h.restaurant.restaurantId}"
-                               class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                Xem lại
-                            </a>
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <a href="${pageContext.request.contextPath}/restaurant/detail?id=${r.restaurantId}"
+                                   class="btn btn-primary btn-sm rounded-pill px-3">
+                                    Xem lại
+                                </a>
+
+                                <a href="${pageContext.request.contextPath}/unlike?id=${r.restaurantId}"
+                                   class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                   title="Bỏ yêu thích">
+                                    <i class="bi bi-heartbreak"></i>
+                                </a>
+
+                            </div>
                         </div>
 
                     </div>
